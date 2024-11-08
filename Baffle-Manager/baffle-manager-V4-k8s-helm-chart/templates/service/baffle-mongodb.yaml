@@ -1,0 +1,16 @@
+{{- if not .Values.baffleMongodb.IsExternal | default false }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: baffle-mongodb
+  name: baffle-mongodb
+spec:
+  ports:
+  - port: {{ .Values.baffleMongodb.service.port }}
+    protocol: TCP
+    targetPort: 27017
+  selector:
+    app: baffle-mongodb
+  type: {{ .Values.baffleMongodb.service.type }} 
+{{- end}}

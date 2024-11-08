@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  baffle-manager:
+  - apiVersion: v2
+    appVersion: 2.40.7
+    created: "2024-11-08T12:25:19.500728132+05:30"
+    description: A Helm chart for Baffle-Manager Microservices application
+    digest: f6f43876f65c59ab2a60e7664473e6ddb94e17b16bc3ce4381a5b0623f8cb922
+    name: baffle-manager
+    urls:
+    - https://github.com/laerdal-blr/baffle-dev/tree/development/Baffle-Manager/baffle-manager-2.40.7.tgz
+    version: 2.40.7
+generated: "2024-11-08T12:25:19.500240042+05:30"

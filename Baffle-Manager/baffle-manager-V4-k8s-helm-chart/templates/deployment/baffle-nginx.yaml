@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baffle-nginx
+  labels:
+    app: baffle-nginx
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: baffle-nginx
+  template:
+    metadata:
+      labels:
+        app: baffle-nginx
+    spec:
+      securityContext:
+        fsGroup: 5000
+        runAsUser: 5000
+        runAsGroup: 5000
+      containers:
+      - name: nginx
+        image: {{ .Values.baffleNginx.image | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: BM_IP
+          value: baffle-manager
+        - name: BM_URL
+          value: "http://baffle-manager:{{ .Values.baffleManager.service.port }}"
+        - name: WEB_URL
+          value: "http://baffle-web:{{ .Values.baffleWeb.service.port }}"
+        command: ["/bin/sh"]
+        args: ["-c", "envsubst '$${BM_IP},$${BM_URL},$${WEB_URL}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && /etc/nginx/gen_certs.sh && nginx -g 'daemon off;'"]
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.image.pullSecrets }}
+      {{ end}}

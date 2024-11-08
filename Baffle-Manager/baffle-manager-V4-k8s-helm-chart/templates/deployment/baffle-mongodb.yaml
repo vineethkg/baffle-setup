@@ -1,0 +1,71 @@
+{{- if not .Values.baffleMongodb.IsExternal | default false }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baffle-mongodb
+  labels:
+    app: baffle-mongodb
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: baffle-mongodb
+  template:
+    metadata:
+      labels:
+        app: baffle-mongodb
+    spec:
+      volumes:
+        - name: baffle-mongodb-volume
+          persistentVolumeClaim:
+            claimName: baffle-mongodb-pvc
+        - name: baffle-secret
+          secret:
+            secretName: baffle-secret
+      securityContext:
+        fsGroup: 5001
+        runAsUser: 5001
+        runAsGroup: 5001
+      containers:
+      - name: baffle-mongodb
+        image: {{ .Values.baffleMongodb.image | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - name: baffle-mongodb-volume
+          mountPath: /data/db
+        - name: baffle-secret
+          mountPath: /run/secrets/mongodb_user
+          subPath: baffle-mongodb-username
+        - name: baffle-secret
+          mountPath: /run/secrets/mongodb_pass
+          subPath: baffle-mongodb-password
+        env:
+        {{- if .Values.baffleMongodb.replication.enabled }}
+        - name: MONGO_REPLICATION
+          value: {{ .Values.baffleMongodb.replication.enabled | quote }}
+        - name: MONGO_KEYFILE
+          valueFrom:
+            secretKeyRef:
+              name: baffle-secret
+              key: baffle-mongodb-repl-key
+        {{- end }}
+        - name: MONGO_INITDB_ROOT_USERNAME_FILE
+          value: /run/secrets/mongodb_user
+        - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+          value: /run/secrets/mongodb_pass
+        - name: MONGO_INITDB_DATABASE
+          value: admin
+        resources:
+          limits:
+            cpu: {{ .Values.baffleMongodb.resources.limits.cpu | quote }}
+            memory: {{ .Values.baffleMongodb.resources.limits.memory | quote }}
+          requests:
+            cpu: {{ .Values.baffleMongodb.resources.requests.cpu | quote }}
+            memory: {{ .Values.baffleMongodb.resources.requests.memory | quote }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.image.pullSecrets }}
+      {{ end}}
+{{- end }}

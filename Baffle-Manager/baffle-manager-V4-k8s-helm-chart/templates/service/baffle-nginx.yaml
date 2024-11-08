@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: baffle-nginx
+  name: baffle-nginx
+  {{ if eq .Values.baffleNginx.service.type "LoadBalancer" }}
+  annotations:
+    "helm.sh/hook": post-install
+  {{ end }}
+spec:
+  ports:
+  - port: {{ .Values.baffleNginx.service.port }}
+    protocol: TCP
+    targetPort: 8443
+  selector:
+    app: baffle-nginx
+  type: {{ .Values.baffleNginx.service.type }}

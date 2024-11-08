@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: baffle-ss-cm
+data:
+  STORE_TYPE: {{ .Values.baffleManager.secretStore.STORE_TYPE | quote }}
+  {{ if eq .Values.baffleManager.secretStore.STORE_TYPE "GCP_IAM" }}
+  SECRET_STORE_GCP_DEFAULT_PROJECT_ID: {{ .Values.baffleManager.secretStore.SECRET_STORE_GCP_DEFAULT_PROJECT_ID | quote }}
+  {{ end }}
+  {{ if eq .Values.baffleManager.secretStore.STORE_TYPE "HASHICORP" }}
+  VAULT_NAMESPACE: {{ .Values.baffleManager.secretStore.VAULT_NAMESPACE | quote }}
+  VAULT_ADDRESS: {{ .Values.baffleManager.secretStore.VAULT_ADDRESS | quote }}
+  VAULT_PORT: {{ .Values.baffleManager.secretStore.VAULT_PORT | quote }}
+  VAULT_DEFAULT_PATH: {{ .Values.baffleManager.secretStore.VAULT_DEFAULT_PATH | quote }}
+  {{ end }}
+  {{ if eq .Values.baffleManager.secretStore.STORE_TYPE "AZURE" }}
+  SECRET_STORE_VAULT_NAME: {{ .Values.baffleManager.secretStore.SECRET_STORE_VAULT_NAME | quote }}
+  SECRET_STORE_CLIENT_ID: {{ .Values.baffleManager.secretStore.SECRET_STORE_CLIENT_ID | quote }}
+  SECRET_STORE_TENANT_ID: {{ .Values.baffleManager.secretStore.SECRET_STORE_TENANT_ID | quote }}
+  {{ end }}
+  {{ if eq .Values.baffleManager.secretStore.STORE_TYPE "AWS_IAM" }}
+  SECRET_MANAGER_REGION: {{ .Values.baffleManager.secretStore.SECRET_MANAGER_REGION | quote }}
+  SECRET_STORE_DEFAULT_PATH: {{ .Values.baffleManager.secretStore.SECRET_STORE_DEFAULT_PATH | quote }}
+  {{ end }}
+  {{ if eq .Values.baffleManager.secretStore.STORE_TYPE "AWS" }}  
+  {{ end }}

@@ -1,0 +1,110 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Release-wide Values
+image:
+  pullPolicy: 'Always'
+  pullSecrets: 
+
+# Service Specific Values
+baffleMongodb:
+  IsExternal: true
+  EXT_MONGO_URL: mongo-rqi-qa-baffel-1.cu652iezjwj5.us-east-1.docdb.amazonaws.com:27017/?tls=true&tlsCAFile=global-bundle.pem&retryWrites=false
+  EXT_MONGO_USER: root
+  EXT_MONGO_PASS: LjdkFshckxowfwH
+  EXT_MONGO_CA_CERT:
+  image: public.ecr.aws/q4l4y9o7/baffle:baffle-mongodb-v4-Release-Baffle.2.6.0.3
+  service:
+    type: ClusterIP
+    port: 27017
+  pvc:
+    storageClass: default
+  resources:
+    requests:
+      cpu: 0.25
+      memory: 500Mi
+    limits:
+      cpu: 1
+      memory: 1Gi
+  replication:
+    enabled: "false"
+    replicationKey: <MONGO-REPLICATION-KEY> 
+    arbiterReplicas: 0
+    MONGO_URL: 
+    arbiterType: LoadBalancer
+    arbiterPort: 27017
+
+baffleManager:
+  image: public.ecr.aws/q4l4y9o7/baffle:baffle-manager-v4-Release-Baffle.2.8.0.1
+  initPass: dE85hkYXDvcLu5n6
+  service:
+    type: ClusterIP
+    port: 8553
+  secretStore:
+
+    # Value can be HASHICORP or GCP_IAM or AZURE or AWS_IAM or CLEAR
+    STORE_TYPE: CLEAR
+    
+    #Set the following values for GCP_IAM type
+    SECRET_STORE_GCP_DEFAULT_PROJECT_ID: 
+
+    # Set the following values for HASHICORP type
+    VAULT_NAMESPACE:
+    VAULT_ADDRESS:
+    VAULT_PORT:
+    VAULT_DEFAULT_PATH:
+    secrets:
+      SECRET_STORE_TOKEN:
+
+    # Set the following values for AZURE type
+
+    # Set the following values for AWS_IAM type
+    SECRET_MANAGER_REGION:
+    SECRET_STORE_DEFAULT_PATH:
+
+  SSO:
+    ORG_NAME:
+    SSO_OIDC: disabled
+    SSO_OIDC_PROVIDER:
+    OIDC_ISSUER_URI:
+    OIDC_CLIENT_ID:
+    OIDC_SCOPE:
+    OIDC_SYS_ADMIN_GROUP_NAME:
+    OIDC_CLAIM_NAME:
+    API_URL:
+    DEPLOYMENT_URL:
+    secrets:
+      OIDC_CLIENT_SECRET:
+  resources:
+    requests:
+      cpu: 0.5
+      memory: 500Mi
+    limits:
+      cpu: 1
+      memory: 1Gi
+
+baffleWeb:
+  image: public.ecr.aws/q4l4y9o7/baffle:baffle-frontend-v4-Release-Baffle.2.8.0.1
+  service:
+    type: ClusterIP
+    port: 8080
+  resources:
+    requests:
+      cpu: 0.25
+      memory: 100Mi
+    limits:
+      cpu: 0.5
+      memory: 250Mi
+
+baffleNginx:
+  image: public.ecr.aws/q4l4y9o7/baffle:baffle-nginx-v4-Release-Baffle.2.8.0.1
+  service: 
+    type: ClusterIP
+    port: 443
+  resources:
+    requests:
+      cpu: 0.25
+      memory: 100Mi
+    limits:
+      cpu: 0.5
+      memory: 250Mi

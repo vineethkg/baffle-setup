@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: baffle-web
+  labels:
+    app: baffle-web
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: baffle-web
+  template:
+    metadata:
+      labels:
+        app: baffle-web
+    spec:
+      securityContext:
+        fsGroup: 5000
+        runAsUser: 5000
+        runAsGroup: 5000
+      containers:
+      - name: baffle-web
+        image: {{ .Values.baffleWeb.image | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.image.pullSecrets }}
+      {{ end}}

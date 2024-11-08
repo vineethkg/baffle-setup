@@ -1,0 +1,15 @@
+{{- if not .Values.baffleMongodb.IsExternal | default false }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: baffle-mongodb-pvc
+ annotations:
+   "helm.sh/hook": pre-install
+spec:
+ accessModes:
+   - ReadWriteOnce
+ resources:
+   requests:
+     storage: 5Gi
+ storageClassName: {{ .Values.baffleMongodb.pvc.storageClass }} 
+{{- end }}
