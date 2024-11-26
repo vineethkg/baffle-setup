@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  baffle-manager:
+  - apiVersion: v2
+    appVersion: 2.40.7
+    created: "2024-11-26T16:36:08.371352628+05:30"
+    description: A Helm chart for Baffle-Manager Microservices application
+    digest: ace32fbb98236eb030fd92085f5c11df061a7df69936508f23ac92b9c3014894
+    name: baffle-manager
+    urls:
+    - https://github.com/vineethkg/baffle-setup/tree/main/charts/baffle-manager-V4-k8s-helm-chart/baffle-manager-2.40.7.tgz
+    version: 2.40.7
+generated: "2024-11-26T16:36:08.370766559+05:30"
